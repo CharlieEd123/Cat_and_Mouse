@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: af15ac494fb9c5e4aa3915f17e19f718
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 305464
+  packageName: Casual Cat - Classic Tabby
+  packageVersion: 1.0.0
+  assetPath: Assets/CasualCat-ClassicTabby/Aimations/CatCT/CatCT_Demo04.controller
+  uploadId: 718086

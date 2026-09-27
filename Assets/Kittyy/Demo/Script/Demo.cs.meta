@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 89a2dd79fe601c44a9a65a4beb10fdbc
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 305464
+  packageName: Casual Cat - Classic Tabby
+  packageVersion: 1.0.0
+  assetPath: Assets/CasualCat-ClassicTabby/Demo/Script/Demo.cs
+  uploadId: 718086

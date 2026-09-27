@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 76ff26005df099d45a1b7faf4ce7aecf
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 305464
+  packageName: Casual Cat - Classic Tabby
+  packageVersion: 1.0.0
+  assetPath: Assets/CasualCat-ClassicTabby/Materials/CatCT_Body.mat
+  uploadId: 718086
