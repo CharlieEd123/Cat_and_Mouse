@@ -82,12 +82,50 @@ public class PlayerMovementInput : MonoBehaviour
 
     private float dustTimer;
 
+    [Header("Footstep Sound")]
+    [Tooltip("Drag your footstep audio clip here. It loops while you move.")]
+    [SerializeField] private AudioClip footstepClip;
+    [Tooltip("Volume while walking (0 to 1).")]
+    [SerializeField, Range(0f, 1f)] private float walkVolume = 0.3f;
+    [Tooltip("Volume while running (0 to 1). Higher than walk volume.")]
+    [SerializeField, Range(0f, 1f)] private float runVolume = 0.8f;
+
+    private AudioSource footstepSource;
+
+    [Header("Action Sounds")]
+    [SerializeField] private AudioClip jumpClip;
+    [SerializeField] private AudioClip landClip;
+    [SerializeField] private AudioClip rollClip;
+    [Tooltip("Volume of jump, land and roll sounds (0 to 1).")]
+    [SerializeField, Range(0f, 1f)] private float sfxVolume = 0.7f;
+    [Tooltip("Random pitch change so repeated sounds don't feel robotic. 0.1 = plus or minus 10%.")]
+    [SerializeField, Range(0f, 0.3f)] private float pitchVariation = 0.1f;
+    [Tooltip("How fast you must be falling for the landing sound to play. Stops tiny bumps from making noise.")]
+    [SerializeField] private float landSoundMinFallSpeed = 3f;
+
+    private AudioSource sfxSource;
+    private bool wasGrounded = true;
+
     public Vector2 MoveInput { get; private set; }
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
+
+        // Footstep audio: use an AudioSource on this object, or add one if missing
+        footstepSource = GetComponent<AudioSource>();
+        if (footstepSource == null) footstepSource = gameObject.AddComponent<AudioSource>();
+        footstepSource.clip = footstepClip;
+        footstepSource.loop = true;
+        footstepSource.playOnAwake = false;
+        footstepSource.spatialBlend = 0f; // 2D sound so volume doesn't depend on camera distance
+
+        // A second AudioSource for one-shot effects (jump, land, roll)
+        sfxSource = gameObject.AddComponent<AudioSource>();
+        sfxSource.playOnAwake = false;
+        sfxSource.loop = false;
+        sfxSource.spatialBlend = 0f;
 
         if (inputActions == null)
         {
@@ -143,7 +181,7 @@ public class PlayerMovementInput : MonoBehaviour
 
         // Run = hold Left/Right Shift, or click the gamepad left stick
         bool running = (kb != null && (kb.leftShiftKey.isPressed || kb.rightShiftKey.isPressed))
-                       || (Gamepad.current != null && Gamepad.current.leftStickButton.isPressed);
+                    || (Gamepad.current != null && Gamepad.current.leftStickButton.isPressed);
 
         // Walking sits on the middle ring of the blend tree, running on the outer ring
         Vector2 animInput = MoveInput * (running ? 1f : walkBlendScale);
@@ -169,16 +207,22 @@ public class PlayerMovementInput : MonoBehaviour
 
         // ---- Jump + gravity ----
         bool grounded = controller.isGrounded;
+        float fallSpeed = -verticalVelocity; // positive number when falling
         if (grounded && verticalVelocity < 0f)
             verticalVelocity = -2f; // small push keeps the character stuck to the ground
 
+        // Landing sound: just touched the ground after a real fall or jump
+        if (grounded && !wasGrounded && fallSpeed > landSoundMinFallSpeed)
+            PlaySfx(landClip);
+
         bool jumpPressed = (kb != null && kb.spaceKey.wasPressedThisFrame)
-                           || (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame);
+                        || (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame);
 
         if (jumpPressed && grounded && !isRolling)
         {
             verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
             animator.SetTrigger(jumpParam);
+            PlaySfx(jumpClip);
         }
 
         verticalVelocity += gravity * Time.deltaTime;
@@ -202,6 +246,7 @@ public class PlayerMovementInput : MonoBehaviour
             rollTimer = rollDuration;
             rollCooldownTimer = rollDuration + rollCooldown;
             animator.SetTrigger(rollParam);
+            PlaySfx(rollClip);
         }
 
         if (isRolling)
@@ -234,6 +279,31 @@ public class PlayerMovementInput : MonoBehaviour
             SpawnDust();
             dustTimer = dustInterval;
         }
+
+        // ---- Footsteps: same clip for walk and run, louder when running ----
+        bool moving = grounded && !isRolling && flatVelocity.magnitude > 0.1f;
+        if (footstepSource != null && footstepClip != null)
+        {
+            if (moving)
+            {
+                footstepSource.volume = running ? runVolume : walkVolume;
+                if (!footstepSource.isPlaying) footstepSource.Play();
+            }
+            else if (footstepSource.isPlaying)
+            {
+                footstepSource.Stop();
+            }
+        }
+
+        wasGrounded = grounded;
+    }
+
+    private void PlaySfx(AudioClip clip)
+    {
+        if (clip == null || sfxSource == null) return;
+
+        sfxSource.pitch = Random.Range(1f - pitchVariation, 1f + pitchVariation);
+        sfxSource.PlayOneShot(clip, sfxVolume);
     }
 
     private void SpawnDust()
