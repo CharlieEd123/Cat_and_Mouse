@@ -158,7 +158,7 @@ public class PlayerMovementInput : MonoBehaviour
     }
 
     private void Update()
-    {
+    {        
         // 1) Gamepad / whatever is bound in the Input Actions asset
         Vector2 actionValue = moveAction != null ? moveAction.ReadValue<Vector2>() : Vector2.zero;
 
