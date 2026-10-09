@@ -33,6 +33,10 @@ public class PlayerMovementInput : MonoBehaviour
     [Tooltip("How far out the blend tree is pushed when walking. Set this to match your Walk ring (e.g. 0.5). Running uses 1.")]
     [SerializeField] private float walkBlendScale = 0.5f;
 
+    [Header("Camera")]
+    [Tooltip("ON: W moves away from the camera, S toward it (use this with Cinemachine). OFF: W always moves toward world north.")]
+    [SerializeField] private bool cameraRelative = true;
+
     [Header("Facing")]
     [Tooltip("ON: the character turns to face the direction it moves (A = left, D = right, S = back). OFF: strafes without turning.")]
     [SerializeField] private bool faceMoveDirection = true;
@@ -158,7 +162,7 @@ public class PlayerMovementInput : MonoBehaviour
     }
 
     private void Update()
-    {        
+    {
         // 1) Gamepad / whatever is bound in the Input Actions asset
         Vector2 actionValue = moveAction != null ? moveAction.ReadValue<Vector2>() : Vector2.zero;
 
@@ -181,12 +185,22 @@ public class PlayerMovementInput : MonoBehaviour
 
         // Run = hold Left/Right Shift, or click the gamepad left stick
         bool running = (kb != null && (kb.leftShiftKey.isPressed || kb.rightShiftKey.isPressed))
-                    || (Gamepad.current != null && Gamepad.current.leftStickButton.isPressed);
+                       || (Gamepad.current != null && Gamepad.current.leftStickButton.isPressed);
 
         // Walking sits on the middle ring of the blend tree, running on the outer ring
         Vector2 animInput = MoveInput * (running ? 1f : walkBlendScale);
 
         Vector3 direction = new Vector3(MoveInput.x, 0f, MoveInput.y);
+
+        // Camera-relative: W moves away from the camera, S toward it, A/D left/right on screen
+        bool useCameraDirection = cameraRelative && Camera.main != null;
+        if (useCameraDirection)
+        {
+            Transform cam = Camera.main.transform;
+            Vector3 camForward = Vector3.ProjectOnPlane(cam.forward, Vector3.up).normalized;
+            Vector3 camRight = Vector3.ProjectOnPlane(cam.right, Vector3.up).normalized;
+            direction = camForward * MoveInput.y + camRight * MoveInput.x;
+        }
 
         if (faceMoveDirection)
         {
@@ -216,7 +230,7 @@ public class PlayerMovementInput : MonoBehaviour
             PlaySfx(landClip);
 
         bool jumpPressed = (kb != null && kb.spaceKey.wasPressedThisFrame)
-                        || (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame);
+                           || (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame);
 
         if (jumpPressed && grounded && !isRolling)
         {
@@ -237,7 +251,7 @@ public class PlayerMovementInput : MonoBehaviour
         if (rollPressed && grounded && !isRolling && rollCooldownTimer <= 0f)
         {
             // Roll the way you are holding; if no direction is held, roll forward
-            Vector3 worldDir = faceMoveDirection ? direction : transform.TransformDirection(direction);
+            Vector3 worldDir = (faceMoveDirection || useCameraDirection) ? direction : transform.TransformDirection(direction);
             rollDirection = worldDir.sqrMagnitude > 0.01f ? worldDir.normalized : transform.forward;
             rollDirection.y = 0f;
             transform.rotation = Quaternion.LookRotation(rollDirection, Vector3.up);
@@ -264,7 +278,7 @@ public class PlayerMovementInput : MonoBehaviour
         else if (!animator.applyRootMotion)
         {
             float speed = running ? runSpeed : moveSpeed;
-            Vector3 worldDir = faceMoveDirection ? direction : transform.TransformDirection(direction);
+            Vector3 worldDir = (faceMoveDirection || useCameraDirection) ? direction : transform.TransformDirection(direction);
             horizontal = worldDir * speed;
         }
 

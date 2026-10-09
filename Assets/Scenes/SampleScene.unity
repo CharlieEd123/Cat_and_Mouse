@@ -18837,7 +18837,7 @@ MonoBehaviour:
     BindingMode: 4
     PositionDamping: {x: 1, y: 1, z: 1}
     AngularDampingMode: 0
-    RotationDamping: {x: 1, y: 1, z: 1}
+    RotationDamping: {x: 0.5, y: 0.5, z: 0.5}
     QuaternionDamping: 1
   OrbitStyle: 0
   Radius: 3
@@ -22429,8 +22429,9 @@ MonoBehaviour:
   moveSpeed: 3
   runSpeed: 6
   walkBlendScale: 0.5
+  cameraRelative: 1
   faceMoveDirection: 1
-  turnSpeed: 720
+  turnSpeed: 500
   jumpParam: Jump
   groundedParam: Grounded
   jumpHeight: 1
