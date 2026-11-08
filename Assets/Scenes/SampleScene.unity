@@ -1720,13 +1720,37 @@ MonoBehaviour:
       m_Calls: []
   onWindup:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 117493838}
+        m_TargetAssemblyTypeName: CatAudio, Assembly-CSharp
+        m_MethodName: PlayWindup
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onStrike:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 117493836}
         m_TargetAssemblyTypeName: HitFlash, Assembly-CSharp
         m_MethodName: Flash
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 117493838}
+        m_TargetAssemblyTypeName: CatAudio, Assembly-CSharp
+        m_MethodName: PlayAttack
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1753,10 +1777,46 @@ MonoBehaviour:
         m_CallState: 2
   onMouseHurt:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 117493838}
+        m_TargetAssemblyTypeName: CatAudio, Assembly-CSharp
+        m_MethodName: PlayHit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1571206996}
+        m_TargetAssemblyTypeName: MouseAudio, Assembly-CSharp
+        m_MethodName: PlayHurt
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onMiss:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 117493838}
+        m_TargetAssemblyTypeName: CatAudio, Assembly-CSharp
+        m_MethodName: PlayMiss
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onStunned:
     m_PersistentCalls:
       m_Calls: []
@@ -1809,6 +1869,7 @@ MonoBehaviour:
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   flashUpTime: 0.05
   flashDownTime: 0.25
+  softFlashAmount: 0.15
 --- !u!114 &117493838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1822,36 +1883,46 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CatAudio
   footstep:
-    clips: []
-    volumeMin: 0.85
-    volumeMax: 1
-    pitchMin: 0.95
-    pitchMax: 1.05
+    clips:
+    - {fileID: 8300000, guid: f755c0fd9f9f78842b70666ceea7fd25, type: 3}
+    volumeMin: 0.9
+    volumeMax: 0.9
+    pitchMin: 0.85
+    pitchMax: 0.95
+    maxLength: 0.2
   windup:
-    clips: []
-    volumeMin: 0.85
-    volumeMax: 1
+    clips:
+    - {fileID: 8300000, guid: 5b5d3a59dca15ea4eac7c482b9691d95, type: 3}
+    volumeMin: 0.6
+    volumeMax: 0.6
     pitchMin: 0.95
     pitchMax: 1.05
+    maxLength: 0.6
   attack:
-    clips: []
-    volumeMin: 0.85
-    volumeMax: 1
+    clips:
+    - {fileID: 8300000, guid: 1f8a32658d8a2664e93936142d153432, type: 3}
+    volumeMin: 0.8
+    volumeMax: 0.8
     pitchMin: 0.95
     pitchMax: 1.05
+    maxLength: 0
   miss:
-    clips: []
-    volumeMin: 0.85
-    volumeMax: 1
+    clips:
+    - {fileID: 8300000, guid: f71ea72251be0ca4d824b2a7fc07f9d8, type: 3}
+    volumeMin: 0.7
+    volumeMax: 0.7
     pitchMin: 0.95
     pitchMax: 1.05
+    maxLength: 0
   hit:
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: b565480fac0803f418bd55ebb24604f0, type: 3}
     volumeMin: 0.85
-    volumeMax: 1
+    volumeMax: 0.85
     pitchMin: 0.95
     pitchMax: 1.05
-  strideLength: 0.9
+    maxLength: 0
+  strideLength: 1.5
   minSpeed: 0.3
   spatialBlend: 1
   maxDistance: 25
@@ -22692,16 +22763,52 @@ MonoBehaviour:
   blockingBool: Blocking
   onBlockStart:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1571206996}
+        m_TargetAssemblyTypeName: MouseAudio, Assembly-CSharp
+        m_MethodName: PlayBlock
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onBlockEnd:
     m_PersistentCalls:
       m_Calls: []
   onBlockedHit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1571206995}
+        m_TargetAssemblyTypeName: HitFlash, Assembly-CSharp
+        m_MethodName: FlashSoft
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onParry:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1571206996}
+        m_TargetAssemblyTypeName: MouseAudio, Assembly-CSharp
+        m_MethodName: PlayParry
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1571206995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22721,6 +22828,7 @@ MonoBehaviour:
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashUpTime: 0.05
   flashDownTime: 0.4
+  softFlashAmount: 0.15
 --- !u!114 &1571206996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22734,29 +22842,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MouseAudio
   hurt:
-    clips: []
-    volumeMin: 0.85
-    volumeMax: 1
+    clips:
+    - {fileID: 8300000, guid: 38a23910bbd38e4438bdcd2c253e8595, type: 3}
+    volumeMin: 0.9
+    volumeMax: 0.9
     pitchMin: 0.95
     pitchMax: 1.05
+    maxLength: 0
   block:
-    clips: []
-    volumeMin: 0.85
-    volumeMax: 1
+    clips:
+    - {fileID: 8300000, guid: 437b44caa447d2641b8c7cab21e5b488, type: 3}
+    volumeMin: 0.8
+    volumeMax: 0.8
     pitchMin: 0.95
     pitchMax: 1.05
+    maxLength: 0
   blockedHit:
     clips: []
     volumeMin: 0.85
     volumeMax: 1
     pitchMin: 0.95
     pitchMax: 1.05
+    maxLength: 0
   parry:
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: c9ac9666d9cd76247b4f4fc654de5029, type: 3}
     volumeMin: 0.85
-    volumeMax: 1
+    volumeMax: 0.85
     pitchMin: 0.95
     pitchMax: 1.05
+    maxLength: 0
   spatialBlend: 0
   maxDistance: 25
 --- !u!4 &1576089874 stripped

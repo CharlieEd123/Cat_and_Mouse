@@ -6,6 +6,7 @@ using UnityEngine;
 /// Visual feedback. Put this on any character (the cat, the mouse, a target...).
 /// Calling Flash() makes the character flash a colour and then fade back, by smoothly
 /// changing the Shader Graph's _FlashAmount float (and optionally its _FlashColor) from C#.
+/// FlashSoft() does the same but only flashes part of the way, for a gentler version.
 ///
 /// Works with characters that have several meshes / several materials: every material that
 /// uses the flash shader (has the _FlashAmount property) gets flashed.
@@ -28,6 +29,11 @@ public class HitFlash : MonoBehaviour
     [SerializeField] private float flashUpTime = 0.05f;
     [Tooltip("Seconds to fade from full flash back to normal.")]
     [SerializeField] private float flashDownTime = 0.25f;
+
+    [Header("Soft flash (for FlashSoft)")]
+    [Tooltip("How far the soft flash goes: 0 = nothing, 1 = same as a full flash. Lower = softer, paler colour.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float softFlashAmount = 0.35f;
 
     private readonly List<Material> materials = new List<Material>();
     private int flashId;
@@ -62,8 +68,19 @@ public class HitFlash : MonoBehaviour
                              "' property. Is the flash material assigned, and is the Reference name correct?");
     }
 
-    // Call this when the character is hit (from a UnityEvent, MeleeAttack, a trigger...).
+    // A full flash. Wire this to an event in the Inspector.
     public void Flash()
+    {
+        StartFlash(1f);
+    }
+
+    // A gentler flash (for example a blocked hit). Wire this to an event in the Inspector.
+    public void FlashSoft()
+    {
+        StartFlash(softFlashAmount);
+    }
+
+    private void StartFlash(float peak)
     {
         if (running != null) StopCoroutine(running); // restart cleanly if hit again mid-flash
 
@@ -71,13 +88,13 @@ public class HitFlash : MonoBehaviour
             foreach (Material m in materials)
                 if (m.HasProperty(colorId)) m.SetColor(colorId, flashColor);
 
-        running = StartCoroutine(FlashRoutine());
+        running = StartCoroutine(FlashRoutine(peak));
     }
 
-    private IEnumerator FlashRoutine()
+    private IEnumerator FlashRoutine(float peak)
     {
-        yield return Fade(0f, 1f, flashUpTime);   // quick flash up
-        yield return Fade(1f, 0f, flashDownTime); // smooth fade back down
+        yield return Fade(0f, peak, flashUpTime);   // quick flash up
+        yield return Fade(peak, 0f, flashDownTime); // smooth fade back down
         running = null;
     }
 

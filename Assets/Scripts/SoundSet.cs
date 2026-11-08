@@ -17,6 +17,11 @@ public class SoundSet
     [Range(0.5f, 2f)] public float pitchMin = 0.95f;
     [Range(0.5f, 2f)] public float pitchMax = 1.05f;
 
+    [Header("Length")]
+    [Tooltip("0 = play the whole clip. Otherwise the sound is cut off after this many seconds " +
+             "(for example 0.6 to match the wind-up). While this is on, playing the sound again replaces the one still playing.")]
+    public float maxLength = 0f;
+
     private AudioSource source;
     private int lastIndex = -1;
 
@@ -42,6 +47,20 @@ public class SoundSet
         if (clip == null) return;
 
         source.pitch = Random.Range(Mathf.Min(pitchMin, pitchMax), Mathf.Max(pitchMin, pitchMax));
-        source.PlayOneShot(clip, Random.Range(Mathf.Min(volumeMin, volumeMax), Mathf.Max(volumeMin, volumeMax)));
+        float volume = Random.Range(Mathf.Min(volumeMin, volumeMax), Mathf.Max(volumeMin, volumeMax));
+
+        if (maxLength > 0f)
+        {
+            // Play the clip, then tell the audio system exactly when to stop it.
+            source.clip = clip;
+            source.volume = volume;
+            double start = AudioSettings.dspTime + 0.02;   // tiny delay so the end time can be scheduled
+            source.PlayScheduled(start);
+            source.SetScheduledEndTime(start + maxLength);
+        }
+        else
+        {
+            source.PlayOneShot(clip, volume);
+        }
     }
 }
