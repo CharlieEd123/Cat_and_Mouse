@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f80e000af317d54f8b4f6e0d6c8e564, type: 3}
   m_Name: PlayerHealth
   m_EditorClassIdentifier: Assembly-CSharp::HealthSO
-  currentHealth: 100
+  maxHealth: 100
+  currentHealth: 0

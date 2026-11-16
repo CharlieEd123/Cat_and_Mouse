@@ -8,8 +8,13 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerHealth", menuName = "Game/Health")]
 public class HealthSO : ScriptableObject
 {
+    [Header("Settings")]
+    [Tooltip("The starting/max health value.")]
+    public float maxHealth = 100f;
+
     // The one field the lab asks for. Set the starting value in the Inspector (e.g. 100).
     public float currentHealth = 100f;
+
 
     // The one method the lab asks for: lowers health and clamps it at zero.
     public void Subtract(float amount)
@@ -17,3 +22,4 @@ public class HealthSO : ScriptableObject
         currentHealth = Mathf.Max(0f, currentHealth - amount);
     }
 }
+

@@ -114,4 +114,17 @@ public class HitFlash : MonoBehaviour
     {
         foreach (Material m in materials) m.SetFloat(flashId, value);
     }
+
+    // Add this method to your HitFlash.cs script to support custom colors on demand:
+    public void FlashCustom(Color customColor, float peakAmount)
+    {
+        if (running != null) StopCoroutine(running);
+
+        foreach (Material m in materials)
+        {
+            if (m.HasProperty(colorId)) m.SetColor(colorId, customColor);
+        }
+
+        running = StartCoroutine(FlashRoutine(peakAmount));
+    }
 }
